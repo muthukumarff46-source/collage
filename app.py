@@ -14,14 +14,15 @@ from functools import wraps
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'tnea_super_secret_2024'   # change in production!
+app.secret_key = os.getenv('SECRET_KEY')   # change in production!
 
 # ── DB config ─────────────────────────────────────────────
 DB_CONFIG = {
-    'host':     'localhost',
-    'user':     'root',
-    'password': '12345678',   # ← change this
-    'database': 'tnea_db'
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME'),
+    'port': int(os.getenv('DB_PORT', 3306))
 }
 
 def get_db():
