@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – TNEA Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+
+<div class="auth-wrapper">
+
+  <div class="auth-left">
+    <div class="auth-left-inner">
+      <div class="brand-logo">🎓</div>
+      <h1>Join TNEA Predictor</h1>
+      <p>Create a free student account and get instant ML-based college predictions for your TNEA cutoff mark.</p>
+      <ul class="feature-list">
+        <li>✅ Free forever for students</li>
+        <li>✅ Instant college predictions</li>
+        <li>✅ Download PDF report</li>
+        <li>✅ District-wise comparison</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <div class="auth-card-header">
+        <h2>Student Registration</h2>
+        <p>Fill in your details to create a student account.</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+
+        <div class="form-group">
+          <label for="full_name">Full Name</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="full_name" name="full_name"
+                   placeholder="Your full name" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="email" name="email"
+                   placeholder="your@email.com" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" name="password"
+                   placeholder="Minimum 6 characters" required class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="confirm_password" name="confirm_password"
+                   placeholder="Re-enter password" required class="form-input">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">Create Account</button>
+
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – TNEA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- Admin Navbar -->
+<nav class="navbar admin-nav">
+  <div class="nav-brand">⚙️ TNEA Admin Panel</div>
+  <div class="nav-right">
+    <span class="nav-user">
+      <span class="role-badge admin-badge">👑 Admin</span>
+      {{ admin_name }}
+    </span>
+    <a href="{{ url_for('predict_page') }}" class="nav-link">Predictor</a>
+    <a href="{{ url_for('logout') }}" class="nav-link logout-link">Logout</a>
+  </div>
+</nav>
+
+<div class="page-header" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+  <h1>⚙️ Admin Dashboard</h1>
+  <p>Manage users, view prediction logs, and monitor system activity</p>
+</div>
+
+<main class="main-container">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ '✅' if category=='success' else '❌' if category=='danger' else '⚠️' }} {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Stats cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">{{ stats.students }}</div>
+      <div class="stat-label">🎓 Students</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ stats.admins }}</div>
+      <div class="stat-label">👑 Admins</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ stats.colleges }}</div>
+      <div class="stat-label">🏫 Colleges</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ stats.searches }}</div>
+      <div class="stat-label">🔍 Searches</div>
+    </div>
+  </div>
+
+  <!-- ── ADD USER FORM ── -->
+  <div class="admin-card">
+    <h3>➕ Add New User</h3>
+    <form method="POST" action="{{ url_for('admin_add_user') }}" class="predict-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="full_name" required class="form-input" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required class="form-input" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" required class="form-input" placeholder="Min 6 chars">
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select name="role" class="form-select">
+            <option value="user">🎓 Student</option>
+            <option value="admin">👑 Admin</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-predict" style="width:auto;padding:.6rem 1.5rem;">
+        Add User
+      </button>
+    </form>
+  </div>
+
+  <!-- ── ALL USERS TABLE ── -->
+  <div class="admin-card">
+    <h3>👥 All Users</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Last Login</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.full_name }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+              {% if u.role == 'admin' %}
+                <span class="role-badge admin-badge">👑 Admin</span>
+              {% else %}
+                <span class="role-badge user-badge">🎓 Student</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge-green">Active</span>
+              {% else %}
+                <span class="badge-red">Inactive</span>
+              {% endif %}
+            </td>
+            <td>{{ u.last_login.strftime('%d %b %Y %H:%M') if u.last_login else 'Never' }}</td>
+            <td class="action-cell">
+              <!-- Toggle active -->
+              <a href="{{ url_for('toggle_user', user_id=u.id) }}"
+                 class="btn-sm {{ 'btn-warn' if u.is_active else 'btn-ok' }}"
+                 onclick="return confirm('Toggle this user?')">
+                {{ 'Deactivate' if u.is_active else 'Activate' }}
+              </a>
+              <!-- Change role -->
+              {% if u.role == 'user' %}
+                <a href="{{ url_for('change_role', user_id=u.id, new_role='admin') }}"
+                   class="btn-sm btn-info"
+                   onclick="return confirm('Make Admin?')">→ Admin</a>
+              {% else %}
+                <a href="{{ url_for('change_role', user_id=u.id, new_role='user') }}"
+                   class="btn-sm btn-info"
+                   onclick="return confirm('Make Student?')">→ Student</a>
+              {% endif %}
+              <!-- Delete -->
+              <a href="{{ url_for('delete_user', user_id=u.id) }}"
+                 class="btn-sm btn-danger"
+                 onclick="return confirm('Delete this user permanently?')">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PREDICTION LOGS ── -->
+  <div class="admin-card">
+    <h3>📋 Recent Prediction Searches</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Cutoff</th>
+            <th>Community</th>
+            <th>Branch</th>
+            <th>District</th>
+            <th>Results</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.full_name or 'Guest' }}</td>
+            <td><strong>{{ log.cutoff_mark }}</strong></td>
+            <td><span class="role-badge user-badge">{{ log.community }}</span></td>
+            <td>{{ log.branch }}</td>
+            <td>{{ log.district }}</td>
+            <td>{{ log.result_count }}</td>
+            <td>{{ log.searched_at.strftime('%d %b %H:%M') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

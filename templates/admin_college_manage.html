@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College & Cutoff Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<header class="admin-header">
+    <div class="header-left">
+        <h1>⚙️ Colleges & Cutoffs</h1>
+        <p>TNEA Admin Control Panel</p>
+    </div>
+    <div class="header-right">
+        👤 {{ session.full_name }}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    </div>
+</header>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for c, m in messages %}
+            <div class="flash {{ c }}">{{ m }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="card">
+            <h2>{{ colleges|length }}</h2>
+            <p>Total Colleges</p>
+        </div>
+        <div class="card">
+            <h2>{{ cutoffs|length }}</h2>
+            <p>Cutoff Records</p>
+        </div>
+    </div>
+
+    <!-- Add College -->
+    <div class="card form-card">
+        <h2>Add College</h2>
+        <form method="POST" action="{{ url_for('add_college') }}">
+            <input type="text" name="college_name" placeholder="College name" required>
+            <input type="text" name="location" placeholder="Location" required>
+            <select name="type" required>
+                <option>Government</option>
+                <option>Government Aided</option>
+                <option>Private</option>
+            </select>
+            <button>Add College</button>
+        </form>
+    </div>
+
+    <!-- Add Cutoff -->
+    <div class="card form-card">
+        <h2>Add Cutoff</h2>
+        <form method="POST" action="{{ url_for('add_cutoff') }}">
+            <select name="college_id" required>
+                <option value="">Select College</option>
+                {% for c in colleges %}
+                <option value="{{ c.id }}">{{ c.college_name }} ({{ c.location }})</option>
+                {% endfor %}
+            </select>
+
+            <select name="branch">
+                <option>CSE</option>
+                <option>IT</option>
+                <option>ECE</option>
+            </select>
+
+            <select name="community">
+                <option>OC</option>
+                <option>BC</option>
+                <option>MBC</option>
+                <option>SC</option>
+                <option>ST</option>
+            </select>
+
+            <input type="number" name="cutoff" step="0.25" placeholder="Cutoff" required>
+            <input type="number" name="year" value="2024">
+            <button>Add Cutoff</button>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <h2>All Cutoffs</h2>
+        <input type="text" id="search" placeholder="Search..." onkeyup="filterTable()">
+
+        <table id="cutTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>College</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Branch</th>
+                    <th>Community</th>
+                    <th>Cutoff</th>
+                    <th>Year</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in cutoffs %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.college_name }}</td>
+                    <td>{{ r.location }}</td>
+                    <td>{{ r.college_type }}</td>
+                    <td>{{ r.branch }}</td>
+                    <td>{{ r.community }}</td>
+                    <td>{{ r.cutoff }}</td>
+                    <td>{{ r.year }}</td>
+                    <td>
+                        <a class="delete"
+                           href="{{ url_for('delete_cutoff', cutoff_id=r.id) }}"
+                           onclick="return confirm('Delete?')">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function filterTable(){
+    let v=document.getElementById('search').value.toLowerCase();
+    document.querySelectorAll('#cutTable tbody tr').forEach(r=>{
+        r.style.display=r.innerText.toLowerCase().includes(v)?'':'none';
+    });
+}
+</script>
+
+</body>
+</html>

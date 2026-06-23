@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results – {{ student_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="logo">
+            <span class="logo-icon">🎓</span>
+            <div>
+                <h1>TNEA College Predictor</h1>
+                <p>2024 Counselling | Tamil Nadu Engineering Admissions</p>
+            </div>
+        </div>
+        <a href="/" class="admin-link">← New Search</a>
+    </div>
+</header>
+
+<section class="result-hero">
+    <div class="result-summary">
+        <h2>Results for <span class="highlight">{{ student_name }}</span></h2>
+        <div class="summary-pills">
+            <span class="pill pill-blue">Cutoff: <strong>{{ cutoff }}</strong></span>
+            <span class="pill pill-purple">Community: <strong>{{ community }}</strong></span>
+            <span class="pill pill-green">Branch: <strong>{{ branch }}</strong></span>
+            <span class="pill pill-orange">Location: <strong>{{ location_pref }}</strong></span>
+        </div>
+    </div>
+</section>
+
+<main class="result-main">
+
+{% if total_found == 0 %}
+    <div class="no-results">
+        <h3>No colleges found</h3>
+        <a href="/" class="btn-back">Try Again</a>
+    </div>
+{% else %}
+
+<!-- ================= DREAM ================= -->
+{% if dream %}
+<section class="college-section">
+    <div class="section-header dream-header">
+        <h3>⭐ Dream Colleges</h3>
+    </div>
+
+    <table class="college-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>College</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Branch</th>
+                <th>Cutoff</th>
+                <th>Official Site</th>
+                <th>Gap</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for col in dream %}
+        <tr class="row-dream">
+            <td>{{ loop.index }}</td>
+
+            <td>
+                <strong>{{ col.college_name }}</strong><br>
+                {% if col.website %}
+                <a href="{{ col.website }}" target="_blank" class="college-link">
+                    🌐 Visit Official Website
+                </a>
+                {% endif %}
+            </td>
+
+            <td>{{ col.location }}</td>
+            <td>{{ col.college_type }}</td>
+            <td>{{ col.branch }}</td>
+            <td>{{ col.cutoff }}</td>
+
+            <td>
+                {% if col.website %}
+                    <a href="{{ col.website }}" target="_blank">Open</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>{{ "%.2f"|format(col.cutoff - cutoff) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+
+<!-- ================= MODERATE ================= -->
+{% if moderate %}
+<section class="college-section">
+    <div class="section-header moderate-header">
+        <h3>🎯 Moderate Colleges</h3>
+    </div>
+
+    <table class="college-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>College</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Branch</th>
+                <th>Cutoff</th>
+                <th>Official Site</th>
+                <th>Buffer</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for col in moderate %}
+        <tr class="row-moderate">
+            <td>{{ loop.index }}</td>
+
+            <td>
+                <strong>{{ col.college_name }}</strong><br>
+                {% if col.website %}
+                <a href="{{ col.website }}" target="_blank" class="college-link">
+                    🌐 Visit Official Website
+                </a>
+                {% endif %}
+            </td>
+
+            <td>{{ col.location }}</td>
+            <td>{{ col.college_type }}</td>
+            <td>{{ col.branch }}</td>
+            <td>{{ col.cutoff }}</td>
+
+            <td>
+                {% if col.website %}
+                    <a href="{{ col.website }}" target="_blank">Open</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>{{ "%.2f"|format(col.diff) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+
+<!-- ================= SAFE ================= -->
+{% if safe %}
+<section class="college-section">
+    <div class="section-header safe-header">
+        <h3>✅ Safe Colleges</h3>
+    </div>
+
+    <table class="college-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>College</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Branch</th>
+                <th>Cutoff</th>
+                <th>Official Site</th>
+                <th>Buffer</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for col in safe %}
+        <tr class="row-safe">
+            <td>{{ loop.index }}</td>
+
+            <td>
+                <strong>{{ col.college_name }}</strong><br>
+                {% if col.website %}
+                <a href="{{ col.website }}" target="_blank" class="college-link">
+                    🌐 Visit Official Website
+                </a>
+                {% endif %}
+            </td>
+
+            <td>{{ col.location }}</td>
+            <td>{{ col.college_type }}</td>
+            <td>{{ col.branch }}</td>
+            <td>{{ col.cutoff }}</td>
+
+            <td>
+                {% if col.website %}
+                    <a href="{{ col.website }}" target="_blank">Open</a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+
+            <td>{{ "%.2f"|format(cutoff - col.cutoff) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+{% endif %}
+
+<div class="action-row">
+    <a href="/" class="btn-back">Search Again</a>
+    <button onclick="window.print()" class="btn-print">Print</button>
+</div>
+
+</main>
+
+<footer class="site-footer">
+    <p>Made for Tamil Nadu students</p>
+</footer>
+
+</body>
+</html>

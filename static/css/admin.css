@@ -1,0 +1,95 @@
+body{
+    margin:0;
+    font-family:Segoe UI, sans-serif;
+    background:#f4f6f9;
+}
+
+.admin-header{
+    background:#1e293b;
+    color:white;
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.admin-header a{
+    color:#fff;
+    margin-left:15px;
+    text-decoration:none;
+    background:#334155;
+    padding:6px 12px;
+    border-radius:6px;
+}
+
+.container{
+    padding:30px 40px;
+}
+
+.stats{
+    display:flex;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.form-card form{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.form-card input,
+.form-card select{
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th, td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:#e2e8f0;
+}
+
+.delete{
+    color:red;
+    text-decoration:none;
+    font-size:18px;
+}
+
+.flash{
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+
+.flash.success{background:#d1fae5;}
+.flash.danger{background:#fee2e2;}
+.flash.warning{background:#fef3c7;}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TNEA College Predictor – Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+
+<div class="auth-wrapper">
+
+  <!-- Left panel -->
+  <div class="auth-left">
+    <div class="auth-left-inner">
+      <div class="brand-logo">🎓</div>
+      <h1>TNEA College Predictor</h1>
+      <p>Intelligent college prediction for Tamil Nadu engineering admissions powered by Machine Learning.</p>
+      <ul class="feature-list">
+        <li>✅ ML-based college prediction</li>
+        <li>✅ Safe / Moderate / Dream tiers</li>
+        <li>✅ District-wise filtering</li>
+        <li>✅ PDF report download</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Right panel – Single Login Form -->
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <div class="auth-card-header">
+        <h2>Welcome Back</h2>
+        <!-- <p>Login with your credentials — Admin and Student use the same login page.</p> -->
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {% if category == 'success' %}✅{% elif category == 'danger' %}❌{% elif category == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Role hint banner -->
+      <!-- <div class="role-hint">
+        <span class="role-badge admin-badge">👑 Admin</span>
+        <span class="role-sep">and</span>
+        <span class="role-badge user-badge">🎓 Student</span>
+        <span class="role-text">— same login, auto-redirect by role</span>
+      </div> -->
+
+      <form method="POST" action="{{ url_for('login') }}" class="auth-form" id="loginForm">
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="email" name="email"
+                   placeholder="Enter your email"
+                   required autocomplete="email"
+                   class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" name="password"
+                   placeholder="Enter your password"
+                   required autocomplete="current-password"
+                   class="form-input">
+            <button type="button" class="toggle-pw" onclick="togglePassword()">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span id="btnText">Login</span>
+        </button>
+
+      </form>
+
+      <div class="auth-footer">
+        <p>New student? <a href="{{ url_for('register') }}">Register here</a></p>
+      </div>
+
+      <!-- Demo credentials box -->
+      <!-- <div class="demo-box">
+        <p><strong>Demo Credentials</strong></p>
+        <div class="demo-row">
+          <span class="demo-label admin-badge">Admin</span>
+          <code>admin@tnea.com</code> / <code>Admin@123</code>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label user-badge">Student</span>
+          <code>student@tnea.com</code> / <code>Student@123</code>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function togglePassword() {
+  const pw = document.getElementById('password');
+  pw.type = pw.type === 'password' ? 'text' : 'password';
+}
+document.getElementById('loginForm').addEventListener('submit', function() {
+  const btn = document.getElementById('loginBtn');
+  document.getElementById('btnText').textContent = 'Logging in...';
+  btn.disabled = true;
+});
+</script>
+
+</body>
+</html>
