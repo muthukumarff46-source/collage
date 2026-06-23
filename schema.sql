@@ -7,6 +7,47 @@ CREATE DATABASE IF NOT EXISTS tnea_db;
 USE tnea_db;
 
 -- ============================================================
+CREATE TABLE IF NOT EXISTS colleges (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    college_name VARCHAR(200) NOT NULL,
+    location     VARCHAR(100) NOT NULL,
+    district     VARCHAR(100) NOT NULL,
+    type         ENUM('Government', 'Government Aided', 'Private') NOT NULL,
+    website      VARCHAR(255),
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- ============================================================
+-- TABLE 2: cutoffs
+-- Stores branch-wise, community-wise cutoff marks
+-- Each college can have many rows (one per branch+community combo)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS cutoffs (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    college_id  INT NOT NULL,
+    branch      VARCHAR(10) NOT NULL,   -- e.g. CSE, IT, ECE
+    community   VARCHAR(10) NOT NULL,   -- OC, BC, BCM, MBC, SC, ST
+    cutoff      DECIMAL(5,2) NOT NULL,  -- cutoff mark out of 200
+    year        INT DEFAULT 2024,       -- counselling year
+    FOREIGN KEY (college_id) REFERENCES colleges(id) ON DELETE CASCADE
+);
+
+-- ============================================================
+-- TABLE 3: admin_users
+-- Simple admin login table
+-- ============================================================
+CREATE TABLE IF NOT EXISTS admin_users (
+    id       INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL   -- store hashed password in production!
+);
+
+-- Default admin: username=admin, password=admin123
+INSERT INTO admin_users (username, password)
+VALUES ('admin', 'admin123')
+ON DUPLICATE KEY UPDATE username = username;
+
+
+-- ============================================================
 -- TABLE: users  (Single table for BOTH admin and student)
 -- role = 'admin'  → goes to Admin Dashboard
 -- role = 'user'   → goes to Prediction Page
