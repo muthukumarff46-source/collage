@@ -4,7 +4,8 @@
 #   admin → /admin/dashboard
 #   user  → /predict
 # ============================================================
-
+import os
+from dotenv import load_dotenv
 from flask import (Flask, render_template, request,
                    redirect, url_for, session, flash, jsonify)
 import mysql.connector
@@ -12,6 +13,7 @@ from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from datetime import datetime
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')   # change in production!
