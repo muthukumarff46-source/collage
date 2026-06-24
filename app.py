@@ -20,10 +20,10 @@ app.secret_key = os.getenv('SECRET_KEY')   # change in production!
 
 # ── DB config ─────────────────────────────────────────────
 DB_CONFIG = {
-    'host': os.getenv('sql12.freesqldatabase.com'),
-    'user': os.getenv('sql12831390'),
-    'password': os.getenv('FQJNpGdHD6'),
-    'database': os.getenv('sql12831390'),
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME'),
     'port': int(os.getenv('DB_PORT', 3306))
 }
 
