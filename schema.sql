@@ -3,9 +3,6 @@
 -- Single Login Page → Role-based redirect (admin / user)
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS tnea_db;
-USE tnea_db;
-
 -- ============================================================
 CREATE TABLE IF NOT EXISTS colleges (
     id           INT AUTO_INCREMENT PRIMARY KEY,
